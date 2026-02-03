@@ -1,0 +1,19 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  name: opa-validating-webhook
+webhooks:
+  - name: opa.policy.example
+    rules:
+      - apiGroups: [""]
+        apiVersions: ["v1"]
+        operations: ["CREATE"]
+        resources: ["pods"]
+    clientConfig:
+      service:
+        name: opa
+        namespace: opa
+        path: /v1/admit
+    admissionReviewVersions: ["v1"]
+    sideEffects: None
+    failurePolicy: Fail

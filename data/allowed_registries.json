@@ -1,0 +1,7 @@
+{
+  "allowed_registries": [
+    "myacr.azurecr.io",
+    "ghcr.io/my-org",
+    "docker.io/library"
+  ]
+}
