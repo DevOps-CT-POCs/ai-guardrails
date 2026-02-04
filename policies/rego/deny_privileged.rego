@@ -1,9 +1,13 @@
 package kubernetes.admission
 
-violation[{"msg": msg}] {
+violation contains {"msg": msg} if {
   input.review.kind.kind == "Pod"
-  some i
-  container := input.review.object.spec.containers[i]
-  container.securityContext.runAsNonRoot == false
-  msg := sprintf("container %v must run as non-root", [container.name])
+
+  container := input.review.object.spec.containers[_]
+  container.securityContext.privileged == true
+
+  msg := sprintf(
+    "Privileged container '%s' is not allowed",
+    [container.name]
+  )
 }

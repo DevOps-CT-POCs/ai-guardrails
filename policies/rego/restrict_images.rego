@@ -1,12 +1,12 @@
 package kubernetes.admission
 
-violation[{"msg": msg}] {
+violation contains {"msg": msg} if {
   input.review.kind.kind == "Pod"
 
   container := input.review.object.spec.containers[_]
   image := container.image
 
-  not startswith_any(image, data.allowed_registries.allowed_registries)
+  not allowed_image(image)
 
   msg := sprintf(
     "Image '%s' is not from an approved registry",
@@ -14,7 +14,7 @@ violation[{"msg": msg}] {
   )
 }
 
-startswith_any(image, registries) {
-  some r
-  startswith(image, r)
+allowed_image(image) if {
+  registry := data.allowed_registries.allowed_registries[_]
+  startswith(image, registry)
 }

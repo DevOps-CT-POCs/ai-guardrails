@@ -6,12 +6,13 @@ required_labels := {
   "environment"
 }
 
-violation[{"msg": msg}] {
+violation contains {"msg": msg} if {
   input.review.kind.kind == "Pod"
 
   labels := input.review.object.metadata.labels
-  missing := required_labels - {key | labels[key]}
+  labels != null
 
+  missing := required_labels - {k | labels[k]}
   count(missing) > 0
 
   msg := sprintf(
