@@ -14,6 +14,7 @@ webhooks:
         name: opa
         namespace: opa
         path: /v1/admit
+        port: 8181
     admissionReviewVersions: ["v1"]
     sideEffects: None
     failurePolicy: Fail

@@ -2,6 +2,7 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: opa
+
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -25,13 +26,30 @@ spec:
             - "run"
             - "--server"
             - "--addr=0.0.0.0:8181"
+            - "--tls-cert-file=/certs/tls.crt"
+            - "--tls-private-key-file=/certs/tls.key"
             - "--config-file=/config/config.yaml"
           ports:
             - containerPort: 8181
+              name: https
           volumeMounts:
+            # OPA config
             - name: opa-config
               mountPath: /config
+              readOnly: true
+
+            # TLS secret mount
+            - name: opa-tls
+              mountPath: /certs
+              readOnly: true
+
       volumes:
+        # ConfigMap volume
         - name: opa-config
           configMap:
             name: opa-config
+
+        # TLS Secret volume
+        - name: opa-tls
+          secret:
+            secretName: opa-tls
